@@ -46,21 +46,26 @@ if __name__ == '__main__':
         orders = 0
 
         while True:  # run check
-            browser.visit(CHECK_URL)
-            # find elements and check count
-            tr_list = browser.find_by_css('#tSortable_active_order tbody').first.find_by_tag('tr')
-            tr_list_len = len(tr_list)
-            no_data = 'No data available in table' in tr_list[0].text 
-            active_orders = tr_list_len if not no_data else 0
-            if active_orders > orders:
-                beep()
-            # set orders as new value
-            orders = active_orders
-            status_message(orders)
-            time.sleep(randint(*TIMEOUT))
+            try:
+                browser.visit(CHECK_URL)
+                # find elements and check count
+                tr_list = browser.find_by_css('#tSortable_active_order tbody').first.find_by_tag('tr')
+                tr_list_len = len(tr_list)
+                no_data = 'No data available in table' in tr_list[0].text 
+                active_orders = tr_list_len if not no_data else 0
+                if active_orders > orders:
+                    beep()
+                # set orders as new value
+                orders = active_orders
+                status_message(orders)
+                time.sleep(randint(*TIMEOUT))
+            except (KeyboardInterrupt, SystemExit):
+                raise
+            except Exception as err:
+                print 'ERROR:', err.message
 
     except (KeyboardInterrupt, SystemExit):
-        pass
+        print 'EXIT'
     finally:
         browser.quit()
         pyglet.app.exit()
