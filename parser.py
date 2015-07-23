@@ -72,7 +72,7 @@ if __name__ == '__main__':
     try:
         while True:
             try:
-                browser = Browser()#'chrome')
+                browser = Browser('chrome')
                 main(browser)
 
             except (KeyboardInterrupt, SystemExit):
