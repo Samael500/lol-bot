@@ -8,7 +8,7 @@ CHECK_URL = 'http://booster.lol-eloboosting.com/dashboard_booster'
 
 MUSIC_PATH = 'alarm.wav'
 
-TIMEOUT = 5, 65
+TIMEOUT = 10, 15
 
 LOGIN_DATA = {'email': 'arturka77703@yandex.ru', 'pwd': 'assass1nicctrmsn'}
 
@@ -19,6 +19,9 @@ from splinter import Browser
 import time
 from random import randint
 
+
+def sleep():
+    time.sleep(randint(*TIMEOUT))
 
 def beep():
     sound = pyglet.media.load(MUSIC_PATH)
@@ -38,7 +41,9 @@ def autorization(browser):
     """ open login page and post credentials """
     browser.visit(LOGIN_URL)
     browser.fill_form(LOGIN_DATA)
+    sleep()
     browser.find_by_css('button.btn.btn-block').click()
+    sleep()
 
 def check_orders(browser, orders):
     """ visit profile page url and check orders is change """
@@ -53,7 +58,7 @@ def check_orders(browser, orders):
     # set orders as new value
     orders = active_orders
     status_message(orders)
-    time.sleep(randint(*TIMEOUT))
+    sleep()
 
     return orders
 
@@ -72,7 +77,7 @@ if __name__ == '__main__':
     try:
         while True:
             try:
-                browser = Browser('chrome')
+                browser = Browser() #'chrome')
                 main(browser)
 
             except (KeyboardInterrupt, SystemExit):
