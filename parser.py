@@ -4,8 +4,8 @@
 
 LOGIN_URL = 'http://booster.lol-eloboosting.com/'
 CHECK_URL = 'http://booster.lol-eloboosting.com/dashboard_booster'
-LOGIN_URL = 'file:///home/maks/s50/arturka/boost/Login booster - Lol-eloboosting.com.html'
-CHECK_URL = 'file:///home/maks/s50/arturka/boost/Dashboard booster - Lol-eloboosting.html'
+# LOGIN_URL = 'file:///home/maks/s50/arturka/boost/Login booster - Lol-eloboosting.com.html'
+# CHECK_URL = 'file:///home/maks/s50/arturka/boost/Dashboard booster - Lol-eloboosting.html'
 
 MUSIC_PATH = 'alarm.wav'
 
