@@ -75,7 +75,7 @@ class BoostBot(object):
         sleep()
         self.browser.fill_form(LOGIN_DATA)
         sleep()
-        browser.find_by_css('button.btn.btn-block').click()
+        self.browser.find_by_css('button.btn.btn-block').click()
         sleep()
 
     def next(self):
