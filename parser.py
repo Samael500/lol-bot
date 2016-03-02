@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+def frange(start, stop, step):
+    r = start
+    while r < stop:
+        yield r
+        r += step
+
 # settings section -----------------------------------------------------------
 
 LOGIN_URL = 'http://booster.lol-eloboosting.com/'
@@ -9,9 +15,10 @@ CHECK_URL = 'http://booster.lol-eloboosting.com/dashboard_booster'
 
 MUSIC_PATH = 'alarm.wav'
 
-TIMEOUT = 1, 2
+TIMEOUT = list(frange(1, 3, .3))
+FAST_SLEEP = list(frange(.5, .7, .03))
 
-QUELONG = 7
+QUELONG = 14
 
 LOGIN_DATA = {'email': 'arturka77703@yandex.ru', 'pwd': 'assass1n'}
 
@@ -20,13 +27,16 @@ LOGIN_DATA = {'email': 'arturka77703@yandex.ru', 'pwd': 'assass1n'}
 import time
 import pyglet
 
-from random import randint
+from random import choice
 from splinter import Browser
 from selenium.webdriver.common.keys import Keys
 
 
 def sleep():
-    time.sleep(randint(*TIMEOUT))
+    time.sleep(choice(TIMEOUT))
+
+def fast_sleep():
+    time.sleep(choice(FAST_SLEEP))
 
 def beep():
     sound = pyglet.media.load(MUSIC_PATH)
@@ -96,7 +106,7 @@ class BoostBot(object):
         for index in range(QUELONG):
             self.next(index)
             self.check_orders()
-            sleep()
+            fast_sleep()
 
     def check_orders(self):
         """ visit profile page url and check orders is change """
