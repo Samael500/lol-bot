@@ -13,8 +13,7 @@ TIMEOUT = 1, 2
 
 QUELONG = 7
 
-LOGIN_DATA = {'email': 'arturka77703@yandex.ru', 'pwd': 'assass1nicctrmsn'}
-
+LOGIN_DATA = {'email': 'arturka77703@yandex.ru', 'pwd': 'assass1n'}
 
 # ----------------------------------------------------------------------------
 
@@ -61,12 +60,9 @@ class BoostBot(object):
     def __init__(self):
         self.browser = Browser(self.BROWSER)
         self.orders = 0
-        self.autorization()
-        for i in range(QUELONG):
-            if i:
-                self.new_tab()
-            self.browser.visit(CHECK_URL)
-            self.killalert()
+        self.cookies = []
+        for index in range(QUELONG):
+            self.new_tab(index)
             sleep()
 
     def autorization(self):
@@ -78,23 +74,33 @@ class BoostBot(object):
         self.browser.find_by_css('button.btn.btn-block').click()
         sleep()
 
-    def next(self):
+    def next(self, index):
         """ Go to next tab """
         self.browser.driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.TAB)
+        self.browser.windows.current = self.browser.windows[index]
+        self.browser.cookies.delete()
+        self.browser.cookies.add(self.cookies[index])
 
-    def new_tab(self):
+    def new_tab(self, index):
         """ Open a new tab in browser """
-        self.browser.driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + 't')
+        # login
+        if index:
+            self.browser.cookies.delete()
+            self.browser.driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + 't')
+            self.browser.windows.current = self.browser.windows[index]
+        self.autorization()
+        self.cookies.append(self.browser.cookies.all())
+        self.killalert()
 
     def close_tabs(self):
         """ Close tabs in browser """
         self.browser.driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.SHIFT + 'w')
 
     def check(self):
-        for i in range(QUELONG):
+        for index in range(QUELONG):
+            self.next(index)
             self.check_orders()
             sleep()
-            self.next()
 
     def check_orders(self):
         """ visit profile page url and check orders is change """
