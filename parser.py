@@ -76,8 +76,8 @@ class BoostBot(object):
 
     def next(self, index):
         """ Go to next tab """
-        self.browser.driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.TAB)
-        self.browser.windows.current = self.browser.windows[index]
+        # self.browser.driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.TAB)
+        # self.browser.windows.current = self.browser.windows[index]
         self.browser.cookies.delete()
         self.browser.cookies.add(self.cookies[index])
 
@@ -86,15 +86,11 @@ class BoostBot(object):
         # login
         if index:
             self.browser.cookies.delete()
-            self.browser.driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + 't')
-            self.browser.windows.current = self.browser.windows[index]
+            # self.browser.driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + 't')
+            # self.browser.windows.current = self.browser.windows[index]
         self.autorization()
         self.cookies.append(self.browser.cookies.all())
         self.killalert()
-
-    def close_tabs(self):
-        """ Close tabs in browser """
-        self.browser.driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.SHIFT + 'w')
 
     def check(self):
         for index in range(QUELONG):
@@ -119,7 +115,6 @@ class BoostBot(object):
 
     def tear_down(self):
         """ Safe exit """
-        self.close_tabs()
         self.browser.quit()
         pyglet.app.exit()
 
