@@ -96,6 +96,8 @@ class BoostBot(object):
         # self.browser.windows.current = self.browser.windows[index]
         self.browser.cookies.delete()
         self.browser.cookies.add(self.cookies[index])
+        self.check_orders()
+        self.cookies[index] = self.browser.cookies.all()
 
     def new_tab(self, index):
         """ Open a new tab in browser """
