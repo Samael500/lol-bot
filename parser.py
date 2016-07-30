@@ -96,6 +96,7 @@ class BoostBot(object):
         # self.browser.windows.current = self.browser.windows[index]
         self.browser.cookies.delete()
         self.browser.cookies.add(self.cookies[index])
+        # check orders and upd cookies
         self.check_orders()
         self.cookies[index] = self.browser.cookies.all()
 
@@ -113,7 +114,6 @@ class BoostBot(object):
     def check(self):
         for index in range(QUELONG):
             self.next(index)
-            self.check_orders()
             fast_sleep()
 
     def check_orders(self):
