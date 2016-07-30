@@ -17,6 +17,7 @@ MUSIC_PATH = 'alarm.wav'
 
 TIMEOUT = list(frange(1, 3, .3))
 FAST_SLEEP = list(frange(.5, .7, .03))
+LONG_SLEEP = list(frange(7.5, 10.7, .2))
 
 QUELONG = 14
 
@@ -31,6 +32,9 @@ from random import choice
 from splinter import Browser
 from selenium.webdriver.common.keys import Keys
 
+
+def long_sleep():
+    time.sleep(choice(LONG_SLEEP))
 
 def sleep():
     time.sleep(choice(TIMEOUT))
@@ -94,11 +98,12 @@ class BoostBot(object):
         """ Go to next tab """
         # self.browser.driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.TAB)
         # self.browser.windows.current = self.browser.windows[index]
+
         self.browser.cookies.delete()
         self.browser.cookies.add(self.cookies[index])
+
         # check orders and upd cookies
         self.check_orders()
-        self.cookies[index] = self.browser.cookies.all()
 
     def new_tab(self, index):
         """ Open a new tab in browser """
@@ -121,6 +126,19 @@ class BoostBot(object):
         self.browser.reload()
         self.wait_redirect(False)
         self.killalert()
+
+        attempts = 5
+
+        text = self.browser.find_by_css("body").text
+        while 'You refreshed too many times' in text or '#tSortable_active_order tbody' not in text:
+            long_sleep()
+            self.browser.reload()
+            text = self.browser.find_by_css("body").text
+
+            attempts -= 1
+            if not attempts:
+                raise Exception('Not found on page')
+
         # find elements and check count
         tr_list = self.browser.find_by_css('#tSortable_active_order tbody').first.find_by_tag('tr')
         tr_list_len = len(tr_list)
