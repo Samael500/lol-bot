@@ -20,7 +20,7 @@ FAST_SLEEP = list(frange(.5, .7, .03))
 
 QUELONG = 14
 
-LOGIN_DATA = {'email': 'arturka77703@yandex.ru', 'pwd': 'assass1n'}
+LOGIN_DATA = {'email': 'selifer@list.ru', 'pwd': '74Ss1PpM'}
 
 # ----------------------------------------------------------------------------
 
@@ -75,14 +75,20 @@ class BoostBot(object):
             self.new_tab(index)
             sleep()
 
+    def wait_redirect(self, do_sleep=True):
+        if do_sleep:
+            sleep()
+        while 'Checking your browser before accessing' in self.browser.find_by_css("body").text:
+            sleep()
+
     def autorization(self):
         """ open login page and post credentials """
         self.browser.visit(LOGIN_URL)
-        sleep()
+        self.wait_redirect()
         self.browser.fill_form(LOGIN_DATA)
-        sleep()
+        self.wait_redirect()
         self.browser.find_by_css('button.btn.btn-block').click()
-        sleep()
+        self.wait_redirect()
 
     def next(self, index):
         """ Go to next tab """
@@ -90,8 +96,6 @@ class BoostBot(object):
         # self.browser.windows.current = self.browser.windows[index]
         self.browser.cookies.delete()
         self.browser.cookies.add(self.cookies[index])
-        self.check_orders()
-        self.cookies[index] = self.browser.cookies.all()
 
     def new_tab(self, index):
         """ Open a new tab in browser """
@@ -107,11 +111,13 @@ class BoostBot(object):
     def check(self):
         for index in range(QUELONG):
             self.next(index)
+            self.check_orders()
             fast_sleep()
 
     def check_orders(self):
         """ visit profile page url and check orders is change """
         self.browser.reload()
+        self.wait_redirect(False)
         self.killalert()
         # find elements and check count
         tr_list = self.browser.find_by_css('#tSortable_active_order tbody').first.find_by_tag('tr')
