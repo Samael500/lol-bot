@@ -16,10 +16,10 @@ CHECK_URL = 'http://booster.lol-eloboosting.com/dashboard_booster'
 MUSIC_PATH = 'alarm.wav'
 
 TIMEOUT = list(frange(1, 3, .3))
-FAST_SLEEP = list(frange(.5, .7, .03))
+FAST_SLEEP = list(frange(1.1, 2.7, .03))
 LONG_SLEEP = list(frange(7.5, 10.7, .2))
 
-QUELONG = 14
+QUELONG = 1
 
 LOGIN_DATA = {'email': 'selifer@list.ru', 'pwd': '74Ss1PpM'}
 
@@ -60,8 +60,8 @@ class BoostBot(object):
 
     """ Manage browser sesion and look to orders """
 
-    BROWSER = 'chrome'
-    # BROWSER = 'firefox'
+    CHROME = 'chrome'
+    FIREFOX = 'firefox'
 
     def killalert(self):
         try:
@@ -72,7 +72,7 @@ class BoostBot(object):
             pass
 
     def __init__(self):
-        self.browser = Browser(self.BROWSER)
+        self.browser = Browser(self.CHROME)
         self.orders = 0
         self.cookies = []
         for index in range(QUELONG):
@@ -98,10 +98,8 @@ class BoostBot(object):
         """ Go to next tab """
         # self.browser.driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.TAB)
         # self.browser.windows.current = self.browser.windows[index]
-
         self.browser.cookies.delete()
         self.browser.cookies.add(self.cookies[index])
-
         # check orders and upd cookies
         self.check_orders()
 
@@ -114,6 +112,7 @@ class BoostBot(object):
             # self.browser.windows.current = self.browser.windows[index]
         self.autorization()
         self.cookies.append(self.browser.cookies.all())
+        long_sleep()
         self.killalert()
 
     def check(self):
@@ -129,15 +128,15 @@ class BoostBot(object):
 
         attempts = 5
 
-        text = self.browser.find_by_css("body").text
-        while 'You refreshed too many times' in text or '#tSortable_active_order tbody' not in text:
-            long_sleep()
-            self.browser.reload()
-            text = self.browser.find_by_css("body").text
+        # text = self.browser.find_by_css("body").text
+        # while 'You refreshed too many times' in text or '#tSortable_active_order tbody' not in text:
+        #     long_sleep()
+        #     self.browser.reload()
+        #     text = self.browser.find_by_css("body").text
 
-            attempts -= 1
-            if not attempts:
-                raise Exception('Not found on page')
+        #     attempts -= 1
+        #     if not attempts:
+        #         raise Exception('Not found on page')
 
         # find elements and check count
         tr_list = self.browser.find_by_css('#tSortable_active_order tbody').first.find_by_tag('tr')
