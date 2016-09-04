@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 def frange(start, stop, step):
     r = start
     while r < stop:
@@ -8,8 +9,8 @@ def frange(start, stop, step):
 
 # settings section -----------------------------------------------------------
 
-LOGIN_URL = 'http://booster.lol-eloboosting.com/'
-CHECK_URL = 'http://booster.lol-eloboosting.com/dashboard_booster'
+LOGIN_URL = 'https://booster.lol-eloboosting.com/'
+CHECK_URL = 'https://booster.lol-eloboosting.com/dashboard_booster'
 # LOGIN_URL = 'file:///home/maks/s50/arturka/boost/Login booster - Lol-eloboosting.com.html'
 # CHECK_URL = 'file:///home/maks/s50/arturka/boost/Dashboard booster - Lol-eloboosting.html'
 
@@ -19,7 +20,7 @@ TIMEOUT = list(frange(1, 3, .3))
 FAST_SLEEP = list(frange(1.1, 2.7, .03))
 LONG_SLEEP = list(frange(7.5, 10.7, .2))
 
-QUELONG = 1
+QUELONG = 10
 
 LOGIN_DATA = {'email': 'selifer@list.ru', 'pwd': '74Ss1PpM'}
 
@@ -36,11 +37,14 @@ from selenium.webdriver.common.keys import Keys
 def long_sleep():
     time.sleep(choice(LONG_SLEEP))
 
+
 def sleep():
     time.sleep(choice(TIMEOUT))
 
+
 def fast_sleep():
     time.sleep(choice(FAST_SLEEP))
+
 
 def beep():
     sound = pyglet.media.load(MUSIC_PATH)
@@ -51,6 +55,7 @@ def beep():
 
     pyglet.clock.schedule_once(exiter, sound.duration + 1)
     pyglet.app.run()
+
 
 def status_message(orders):
     print 'Active orders: %d' % orders
@@ -77,7 +82,7 @@ class BoostBot(object):
         self.cookies = []
         for index in range(QUELONG):
             self.new_tab(index)
-            sleep()
+            fast_sleep()
 
     def wait_redirect(self, do_sleep=True):
         if do_sleep:
@@ -88,16 +93,14 @@ class BoostBot(object):
     def autorization(self):
         """ open login page and post credentials """
         self.browser.visit(LOGIN_URL)
-        self.wait_redirect()
+        self.wait_redirect(False)
         self.browser.fill_form(LOGIN_DATA)
-        self.wait_redirect()
+        self.wait_redirect(False)
         self.browser.find_by_css('button.btn.btn-block').click()
-        self.wait_redirect()
+        self.wait_redirect(False)
 
     def next(self, index):
         """ Go to next tab """
-        # self.browser.driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.TAB)
-        # self.browser.windows.current = self.browser.windows[index]
         self.browser.cookies.delete()
         self.browser.cookies.add(self.cookies[index])
         # check orders and upd cookies
@@ -108,11 +111,13 @@ class BoostBot(object):
         # login
         if index:
             self.browser.cookies.delete()
+            self.browser.cookies.add({
+                'cf_clearance': self.cookies[0]['cf_clearance'], '__cfduid': self.cookies[0]['__cfduid']})
             # self.browser.driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + 't')
             # self.browser.windows.current = self.browser.windows[index]
         self.autorization()
         self.cookies.append(self.browser.cookies.all())
-        long_sleep()
+        sleep()
         self.killalert()
 
     def check(self):
@@ -128,9 +133,9 @@ class BoostBot(object):
 
         attempts = 5
 
-        # text = self.browser.find_by_css("body").text
-        # while 'You refreshed too many times' in text or '#tSortable_active_order tbody' not in text:
-        #     long_sleep()
+        text = self.browser.find_by_css("body").text
+        while 'You refreshed too many times' in text:  # or '#tSortable_active_order tbody' not in text:
+            sleep()
         #     self.browser.reload()
         #     text = self.browser.find_by_css("body").text
 
