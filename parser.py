@@ -22,7 +22,7 @@ LONG_SLEEP = list(frange(7.5, 10.7, .2))
 
 QUELONG = 10
 
-LOGIN_DATA = {'email': 'selifer@list.ru', 'pwd': '74Ss1PpM'}
+LOGIN_DATA = None
 
 # ----------------------------------------------------------------------------
 
