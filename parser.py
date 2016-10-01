@@ -14,7 +14,6 @@ CHECK_URL = 'https://booster.lol-eloboosting.com/dashboard_booster'
 # LOGIN_URL = 'file:///home/maks/s50/arturka/boost/Login booster - Lol-eloboosting.com.html'
 # CHECK_URL = 'file:///home/maks/s50/arturka/boost/Dashboard booster - Lol-eloboosting.html'
 
-MUSIC_PATH = 'alarm.wav'
 
 TIMEOUT = list(frange(1, 3, .3))
 FAST_SLEEP = list(frange(1.1, 2.7, .03))
