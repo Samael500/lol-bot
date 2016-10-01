@@ -17,6 +17,7 @@ class Visitor(object):
     browser_name = 'chrome'
     LOGIN_URL = 'https://booster.lol-eloboosting.com/login.html'
     CHECK_URL = 'https://booster.lol-eloboosting.com/dashboard_booster'
+    NOLIMIT_CHECK_URL = 'https://booster.lol-eloboosting.com/dashboard_booster/active_orders_refresh'
     MUSIC_PATH = 'alarm.wav'
     QUELONG = 5#10
 
@@ -51,7 +52,7 @@ class Visitor(object):
             # Prevent LOL DDOS protect
             self.swipe_session()
             return self.visit(url)
-        self.wait(1)
+        self.wait(.1)
 
     def beep(self):
         """ Run allarm beep """
@@ -72,22 +73,21 @@ class Visitor(object):
 
     def dashboard(self):
         """ open dashboard page and check orders """
-        self.visit(self.CHECK_URL)
-        if not 'tSortable_active_order' is self.browser.html:
-            print (':/')
-            print (self.browser.html)
-            return
-        tr_list = self.browser.find_by_css('#tSortable_active_order tbody').first.find_by_tag('tr')
-        tr_list_len = len(tr_list)
-        no_data = 'No data available in table' in tr_list[0].text
+        self.visit(self.NOLIMIT_CHECK_URL)
+        # tSortable_active_order
+        tr_list = self.browser.find_by_css('#tSortable_test_order tbody').first.find_by_tag('tr')
+        tr_list_len = max([len(tr_list) - 1, 0])
+        no_data = 'No data available in table' in tr_list[0].text if tr_list_len else True
         active_orders = tr_list_len if not no_data else 0
         if active_orders > self.orders:
             self.beep()
+            self.visit(self.CHECK_URL)
+            self.wait(15)
         # set orders as new value
         self.orders = active_orders
         self.log(self.orders)
 
-    def log(orders):
+    def log(self, orders):
         """ Simple log to print output """
         print 'Active orders: {}'.format(orders)
 
