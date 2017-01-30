@@ -76,7 +76,7 @@ class Visitor(object):
         self.visit(self.NOLIMIT_CHECK_URL)
         # tSortable_active_order
         tr_list = self.browser.find_by_css('#tSortable_test_order tbody').first.find_by_tag('tr')
-        tr_list_len = max([len(tr_list) - 1, 0])
+        tr_list_len = max([len(tr_list), 0])
         no_data = 'No data available in table' in tr_list[0].text if tr_list_len else True
         active_orders = tr_list_len if not no_data else 0
         if active_orders > self.orders:
