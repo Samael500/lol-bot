@@ -15,9 +15,9 @@ class Visitor(object):
     """ Visit page and check new orders """
 
     browser_name = 'chrome'
-    LOGIN_URL = 'https://booster.lol-eloboosting.com/login.html'
-    CHECK_URL = 'https://booster.lol-eloboosting.com/dashboard_booster'
-    NOLIMIT_CHECK_URL = 'https://booster.lol-eloboosting.com/dashboard_booster/active_orders_refresh'
+    LOGIN_URL = 'https://boost-center.com/login'
+    CHECK_URL = 'https://boost-center.com/dashboard_booster.html'
+    NOLIMIT_CHECK_URL = 'https://boost-center.com/dashboard_booster/active_orders_refresh'
     MUSIC_PATH = 'alarm.wav'
     QUELONG = 5#10
 
