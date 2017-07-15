@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import sys
 import time
 import pyglet
+import datetime
 
 from random import choice
 from splinter import Browser
@@ -30,15 +32,6 @@ class Visitor(object):
     def wait(self, timeout=3):
         time.sleep(timeout)
 
-    def swipe_session(self):
-        """ Upd browser cookie """
-        self.sessions[self.current_session] = self.browser.cookies.all()
-        self.browser.cookies.delete()
-        # move to next session
-        self.current_session = (self.current_session + 1) % self.QUELONG
-        if self.sessions[self.current_session]:
-            self.browser.cookies.add(self.sessions[self.current_session])
-
     def visit(self, url):
         """ Open page in browser and prewent wait_check """
         self.browser.visit(url)
@@ -47,10 +40,6 @@ class Visitor(object):
             self.wait()
         if '<h1>Booster dashboard. Sign In</h1>' in self.browser.html and url != self.LOGIN_URL:
             self.autorization()
-            return self.visit(url)
-        if 'You refreshed too many times' in self.browser.html:
-            # Prevent LOL DDOS protect
-            self.swipe_session()
             return self.visit(url)
         self.wait(.1)
 
@@ -70,6 +59,9 @@ class Visitor(object):
         self.visit(self.LOGIN_URL)
         self.browser.fill_form(LOGIN_DATA)
         self.browser.find_by_css('button.btn.btn-block').click()
+        now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+        msg = '\n{} Log in'.format(now)
+        print (msg)
 
     def dashboard(self):
         """ open dashboard page and check orders """
@@ -81,15 +73,18 @@ class Visitor(object):
         active_orders = tr_list_len if not no_data else 0
         if active_orders > self.orders:
             self.beep()
-            self.visit(self.CHECK_URL)
-            self.wait(15)
+            # self.visit(self.CHECK_URL)
+            # self.wait(15)
         # set orders as new value
         self.orders = active_orders
         self.log(self.orders)
 
     def log(self, orders):
         """ Simple log to print output """
-        print 'Active orders: {}'.format(orders)
+        now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+        msg = '\r{} active orders: {:3d}'.format(now, orders)
+        sys.stdout.write(msg)
+        sys.stdout.flush()
 
     def run(self):
         """ Login and check """
@@ -97,6 +92,25 @@ class Visitor(object):
         while True:
             self.dashboard()
 
+    def tear_down(self):
+        """ Safe exit """
+        self.browser.quit()
+        pyglet.app.exit()
+
+
 if __name__ == '__main__':
-    vis = Visitor()
-    vis.run()
+    try:
+        while True:
+
+            try:
+                vis = Visitor()
+                vis.run()
+            except (KeyboardInterrupt, SystemExit):
+                print '\nEXIT'
+                raise
+            except Exception as err:
+                print '\nERROR:', err, err.message
+            finally:
+                vis.tear_down()
+    except (KeyboardInterrupt, SystemExit):
+        pass
