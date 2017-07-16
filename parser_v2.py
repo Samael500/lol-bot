@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import traceback
 import time
 import pyglet
 import datetime
@@ -12,6 +13,8 @@ from selenium.webdriver.common.keys import Keys
 from secret import LOGIN_DATA
 
 
+is_js_loaded = "document.readyState === 'complete';"
+
 class Visitor(object):
 
     """ Visit page and check new orders """
@@ -21,7 +24,7 @@ class Visitor(object):
     CHECK_URL = 'https://boost-center.com/dashboard_booster.html'
     NOLIMIT_CHECK_URL = 'https://boost-center.com/dashboard_booster/active_orders_refresh'
     MUSIC_PATH = 'alarm.wav'
-    QUELONG = 5#10
+    QUELONG = 5  # 10
 
     def __init__(self):
         self.browser = Browser(self.browser_name)
@@ -66,6 +69,8 @@ class Visitor(object):
     def dashboard(self):
         """ open dashboard page and check orders """
         self.visit(self.NOLIMIT_CHECK_URL)
+        while not self.browser.evaluate_script(is_js_loaded):
+            self.wait(.1)
         # tSortable_active_order
         tr_list = self.browser.find_by_css('#tSortable_test_order tbody').first.find_by_tag('tr')
         tr_list_len = max([len(tr_list), 0])
@@ -101,7 +106,6 @@ class Visitor(object):
 if __name__ == '__main__':
     try:
         while True:
-
             try:
                 vis = Visitor()
                 vis.run()
@@ -110,6 +114,7 @@ if __name__ == '__main__':
                 raise
             except Exception as err:
                 print '\nERROR:', err, err.message
+                traceback.print_exc()
             finally:
                 vis.tear_down()
     except (KeyboardInterrupt, SystemExit):
