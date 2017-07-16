@@ -28,6 +28,7 @@ class Visitor(object):
 
     def __init__(self):
         self.browser = Browser(self.browser_name)
+        self.browser.driver.set_page_load_timeout(15)
         self.orders = 0
         self.sessions = [None] * self.QUELONG
         self.current_session = 0
