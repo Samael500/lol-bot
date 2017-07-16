@@ -45,7 +45,7 @@ class Visitor(object):
         if '<h1>Booster dashboard. Sign In</h1>' in self.browser.html and url != self.LOGIN_URL:
             self.autorization()
             return self.visit(url)
-        self.wait(.1)
+        self.wait(.5)
 
     def beep(self):
         """ Run allarm beep """
